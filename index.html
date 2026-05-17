@@ -114,11 +114,21 @@ body{padding:0 16px 40px}
 .el-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 
 /* ── BOTTOM STATS ── */
-#bottom-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+#learning-panel{border:0.5px solid var(--bd);border-radius:8px;padding:10px 12px;background:var(--bg2);display:flex;flex-direction:column;gap:4px}
+#learning-panel .lp-title{font-size:10px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.09em}
+#learning-panel .lp-main{font-size:13px;color:var(--ink);line-height:1.45}
+#learning-panel .lp-sub{font-size:11px;color:var(--ink2);line-height:1.4}
+#learning-panel.warning{border-color:var(--amber);background:var(--amber-light)}
+#learning-panel.danger{border-color:var(--red);background:var(--red-light)}
+#learning-panel.success{border-color:var(--green);background:var(--green-light)}
+
+/* bottom stats */
+#bottom-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .bstat{background:var(--bg2);border-radius:7px;padding:8px 10px;border:0.5px solid var(--bd)}
 .bstat-label{font-size:9px;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em}
 .bstat-val{font-size:18px;font-weight:500;margin-top:2px;color:var(--ink)}
 .bstat-sub{font-size:9px;color:var(--ink3);margin-top:1px}
+@media(max-width:720px){#bottom-stats{grid-template-columns:repeat(2,1fr)}}
 
 /* ── RIGHT PANELS ── */
 .panel{border:0.5px solid var(--bd);border-radius:8px;padding:10px 12px;background:var(--bg)}
@@ -222,17 +232,24 @@ body{padding:0 16px 40px}
         </div>
       </div>
 
+      <!-- LEARNING FEEDBACK -->
+      <div id="learning-panel">
+        <div class="lp-title">Reasoning coach</div>
+        <div class="lp-main" id="coach-main">Select an empty cell, then choose a number.</div>
+        <div class="lp-sub" id="coach-sub">Every entry changes the possibility space. Watch how uncertainty and candidates shrink as you solve.</div>
+      </div>
+
       <!-- BOTTOM STATS -->
       <div id="bottom-stats">
         <div class="bstat">
-          <div class="bstat-label">Puzzle entropy</div>
+          <div class="bstat-label">Uncertainty</div>
           <div class="bstat-val" id="stat-entropy">—</div>
-          <div class="bstat-sub">total H bits</div>
+          <div class="bstat-sub">total options</div>
         </div>
         <div class="bstat">
-          <div class="bstat-label">Open cells</div>
+          <div class="bstat-label">Unsolved</div>
           <div class="bstat-val" id="stat-open">—</div>
-          <div class="bstat-sub">unfilled</div>
+          <div class="bstat-sub">cells left</div>
         </div>
         <div class="bstat">
           <div class="bstat-label">Placed</div>
@@ -240,9 +257,14 @@ body{padding:0 16px 40px}
           <div class="bstat-sub">by you</div>
         </div>
         <div class="bstat">
-          <div class="bstat-label">Avg options</div>
+          <div class="bstat-label">Possibilities</div>
           <div class="bstat-val" id="stat-avg">—</div>
-          <div class="bstat-sub">per empty cell</div>
+          <div class="bstat-sub">avg per cell</div>
+        </div>
+        <div class="bstat">
+          <div class="bstat-label">Mistakes</div>
+          <div class="bstat-val" id="stat-mistakes">0/5</div>
+          <div class="bstat-sub">learning limit</div>
         </div>
       </div>
 
@@ -259,13 +281,13 @@ body{padding:0 16px 40px}
 
       <!-- ANALYSIS -->
       <div class="panel" id="analysis">
-        <h3>Cell analysis</h3>
+        <h3>Decision impact</h3>
         <div class="metric-row">
-          <span class="metric-label">Candidates</span>
+          <span class="metric-label">Possible values</span>
           <span class="metric-val" id="m-cands">—</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">Entropy H</span>
+          <span class="metric-label">Uncertainty</span>
           <span class="metric-val" id="m-entropy">—</span>
         </div>
         <div class="metric-row">
@@ -273,34 +295,34 @@ body{padding:0 16px 40px}
           <span class="metric-val" id="m-influence">—</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">Peer pressure</span>
+          <span class="metric-label">Known neighbors</span>
           <span class="metric-val" id="m-density">—</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">Forced cascade</span>
+          <span class="metric-label">Forced next steps</span>
           <span class="metric-val" id="m-prop">—</span>
         </div>
         <div class="metric-row">
-          <span class="metric-label">Branching factor</span>
+          <span class="metric-label">Choice pressure</span>
           <span class="metric-val" id="m-branch">—</span>
         </div>
       </div>
 
       <!-- COMBINATION PANEL -->
       <div class="panel" id="combo-panel">
-        <h3>Combination space</h3>
+        <h3>Unstable areas</h3>
         <div id="combo-list"></div>
       </div>
 
       <!-- PROPAGATION LOG -->
       <div class="panel" id="prop-panel">
-        <h3>Chain reactions</h3>
-        <div id="prop-log"><div style="color:var(--ink3);font-size:10px">Place a number to observe propagation effects</div></div>
+        <h3>Decision ripple</h3>
+        <div id="prop-log"><div style="color:var(--ink3);font-size:10px">Place a number to see what changed</div></div>
       </div>
 
       <!-- PATTERNS DETECTED -->
       <div id="pattern-box">
-        <h3>Structural patterns</h3>
+        <h3>Reasoning patterns</h3>
         <div id="pattern-list"><div style="color:var(--ink3);font-size:10px">Patterns emerge as you interact</div></div>
       </div>
 
@@ -428,10 +450,11 @@ let currentDiff = 'easy';
 let GIVEN, SOLUTION;
 let board, sandboxBoard, candidates, notes;
 let selected = null, hoveredCell = null;
-let selectedNum = 1, noteMode = false, sandboxMode = false;
+let selectedNum = null, noteMode = false, sandboxMode = false;
 let overlays = { entropy: true, influence: false };
 let propLog = [];
-let moveCount = 0, startTime = Date.now();
+let moveCount = 0, mistakeCount = 0, startTime = Date.now();
+let gameLocked = false;
 let detectedPatterns = [];
 
 function initPuzzle(diff) {
@@ -443,7 +466,8 @@ function initPuzzle(diff) {
   candidates = computeCandidates(board);
   notes = Array.from({length:9},()=>Array.from({length:9},()=>new Set()));
   selected = null; hoveredCell = null;
-  propLog = []; moveCount = 0; startTime = Date.now();
+  propLog = []; moveCount = 0; mistakeCount = 0; startTime = Date.now();
+  gameLocked = false;
   detectedPatterns = [];
   sandboxMode = false;
   document.getElementById('sandbox-banner').classList.remove('visible');
@@ -615,13 +639,34 @@ function buildNumPicker() {
     const btn=document.createElement('button');
     btn.className='num-btn'+(n===selectedNum?' sel':'')+(noteMode?' note-mode-on':'');
     btn.textContent=n; btn.id=`nBtn-${n}`;
-    btn.addEventListener('click',()=>{ selectedNum=n; updateNumPicker(); });
+    btn.addEventListener('click',()=>chooseNumber(n));
     np.appendChild(btn);
   }
   const eb=document.createElement('button');
   eb.className='num-btn erase-btn'; eb.textContent='✕'; eb.title='Erase (Del)';
   eb.addEventListener('click',()=>{ selectedNum=0; updateNumPicker(); if(selected&&GIVEN[selected.r][selected.c]===0) removeNumber(selected.r,selected.c); });
   np.appendChild(eb);
+}
+
+function chooseNumber(n) {
+  selectedNum=n;
+  updateNumPicker();
+  if(!selected) {
+    setCoach('Pick a cell first.', 'Choose an empty square, then enter a number to test that decision.', 'warning');
+    return;
+  }
+  if(GIVEN[selected.r][selected.c]!==0) {
+    setCoach('That cell is fixed by the puzzle.', 'Select an empty cell to make your own reasoning move.', 'warning');
+    return;
+  }
+  if(noteMode) {
+    const ns=notes[selected.r][selected.c];
+    if(ns.has(n)) ns.delete(n); else ns.add(n);
+    renderCell(selected.r,selected.c);
+    setCoach(`Note ${n} ${ns.has(n)?'added':'removed'}.`, 'Notes are temporary possibilities. They help you compare combinations before committing.', '');
+  } else {
+    placeNumber(selected.r,selected.c,n);
+  }
 }
 
 function updateNumPicker() {
@@ -730,6 +775,17 @@ function drawInfluenceLines(r,c) {
   }
 }
 
+function setCoach(main, sub, tone='') {
+  const panel=document.getElementById('learning-panel');
+  const mainEl=document.getElementById('coach-main');
+  const subEl=document.getElementById('coach-sub');
+  if(!panel||!mainEl||!subEl) return;
+  panel.classList.remove('warning','danger','success');
+  if(tone) panel.classList.add(tone);
+  mainEl.textContent=main;
+  subEl.textContent=sub;
+}
+
 // ================================================================
 // INTERACTION
 // ================================================================
@@ -737,23 +793,48 @@ function selectCell(r,c) {
   if(selected){ cells[selected.r][selected.c].classList.remove('selected'); }
   selected={r,c};
   cells[r][c].classList.add('selected');
-  if(selectedNum>0&&GIVEN[r][c]===0) {
-    if(noteMode) {
-      const ns=notes[r][c];
-      if(ns.has(selectedNum)) ns.delete(selectedNum); else ns.add(selectedNum);
-      renderCell(r,c);
-    } else {
-      placeNumber(r,c,selectedNum);
-    }
-  } else if(selectedNum===0&&GIVEN[r][c]===0) {
-    removeNumber(r,c);
+  updateRightPanel(r,c);
+  if(GIVEN[r][c]!==0) {
+    setCoach('This is a fixed clue.', 'Use it as evidence. Fixed numbers reduce the choices around them.', '');
+    return;
   }
+  const options=[...candidates[r][c]].sort().join(', ')||'none';
+  setCoach(`Cell r${r+1}c${c+1} has ${candidates[r][c].size} possible value${candidates[r][c].size!==1?'s':''}.`, `Possible values: ${options}. Choose a number only after checking how it affects the row, column, and box.`, '');
 }
 
 function placeNumber(r,c,val) {
+  if(gameLocked) {
+    setCoach('Training paused.', 'You reached 5 mistakes. Reset the puzzle or change difficulty to start a fresh run.', 'danger');
+    return;
+  }
+  if(GIVEN[r][c]!==0) return;
+  if(board[r][c]===val) {
+    setCoach(`You already placed ${val} here.`, 'Try inspecting a different cell or use erase if you want to reopen this decision.', '');
+    return;
+  }
+  if(!sandboxMode&&val!==SOLUTION[r][c]) {
+    mistakeCount++;
+    updateBottomStats();
+    cells[r][c].classList.add('conflict');
+    setTimeout(()=>cells[r][c].classList.remove('conflict'),450);
+    const remaining=Math.max(0,5-mistakeCount);
+    if(mistakeCount>=5) {
+      gameLocked=true;
+      setCoach('Mistake limit reached.', 'This run is locked after 5 mistakes. Reset and try again with slower candidate checking.', 'danger');
+      document.getElementById('complete-card').querySelector('h2').textContent='Training paused';
+      document.getElementById('complete-stats').textContent='You reached 5 mistakes. Reset the puzzle to practice the reasoning path again.';
+      document.querySelector('#complete-card button').textContent='Review board';
+      setTimeout(()=>document.getElementById('complete-overlay').classList.add('visible'),250);
+    } else {
+      setCoach(`Not this number. ${remaining} mistake${remaining!==1?'s':''} left.`, `Good learning moment: ${val} does not fit r${r+1}c${c+1}. Recheck the candidates and look for a number forced by the surrounding constraints.`, 'warning');
+    }
+    return;
+  }
+  const entropyBefore=totalEntropy(candidates);
   const prevCandsCopy=candidates.map(row=>row.map(s=>new Set(s)));
   board[r][c]=val;
   const newCands=computeCandidates(board);
+  const entropyAfter=totalEntropy(newCands);
   // calculate eliminated candidates
   const eliminated=[];
   for(let pr=0;pr<9;pr++) for(let pc=0;pc<9;pc++) {
@@ -765,6 +846,9 @@ function placeNumber(r,c,val) {
   notes[r][c]=new Set();
   moveCount++;
   renderAll();
+  const reduced=Math.max(0,entropyBefore-entropyAfter).toFixed(1);
+  const totalElim=eliminated.reduce((a,e)=>a+e.lost.length,0);
+  setCoach(`Correct: ${val} fits r${r+1}c${c+1}.`, `Decision impact: ${totalElim} possibilities removed across ${eliminated.length} cells. System uncertainty dropped by ${reduced}.`, 'success');
   if(overlays.influence&&hoveredCell) drawInfluenceLines(hoveredCell.r,hoveredCell.c);
 }
 
@@ -773,6 +857,7 @@ function removeNumber(r,c) {
     board[r][c]=0;
     candidates=computeCandidates(board);
     renderAll();
+    setCoach(`Cell r${r+1}c${c+1} cleared.`, 'Removing a number reopens possibilities, so uncertainty can rise again.', '');
   }
 }
 
@@ -865,6 +950,8 @@ function updateBottomStats() {
   document.getElementById('stat-open').textContent=openCount();
   document.getElementById('stat-placed').textContent=placedCount();
   document.getElementById('stat-avg').textContent=avgCandidates();
+  const mistakeEl=document.getElementById('stat-mistakes');
+  if(mistakeEl) mistakeEl.textContent=`${mistakeCount}/5`;
 }
 
 function updateComboPanel() {
@@ -934,8 +1021,10 @@ function checkComplete() {
   if(complete) {
     const elapsed=Math.round((Date.now()-startTime)/1000);
     const mins=Math.floor(elapsed/60), secs=elapsed%60;
+    document.getElementById('complete-card').querySelector('h2').textContent='Puzzle solved';
     document.getElementById('complete-stats').textContent=
       `Puzzle resolved in ${mins>0?mins+'m ':''}${secs}s · ${moveCount} moves · final entropy 0`;
+    document.querySelector('#complete-card button').textContent='Continue exploring';
     setTimeout(()=>document.getElementById('complete-overlay').classList.add('visible'),400);
   }
 }
@@ -972,15 +1061,17 @@ function exitSandbox() {
   document.getElementById('btn-sandbox').classList.remove('active');
   candidates=computeCandidates(board);
   renderAll();
+  setCoach('Sandbox closed.', 'Your hypothetical moves were removed. You are back to the real reasoning path.', '');
 }
 function resetPuzzle() {
   if(sandboxMode) exitSandbox();
   board=GIVEN.map(r=>[...r]);
   notes=Array.from({length:9},()=>Array.from({length:9},()=>new Set()));
-  propLog=[]; moveCount=0; startTime=Date.now(); selected=null; hoveredCell=null;
+  propLog=[]; moveCount=0; mistakeCount=0; startTime=Date.now(); selected=null; hoveredCell=null; gameLocked=false;
   clearHighlights(); clearInfluenceLines();
   candidates=computeCandidates(board);
   renderAll();
+  setCoach('Fresh board loaded.', 'Select an empty cell, inspect the possibilities, then choose a number.', '');
 }
 function changeDifficulty(diff) {
   if(sandboxMode) exitSandbox();
@@ -988,7 +1079,8 @@ function changeDifficulty(diff) {
   clearHighlights(); clearInfluenceLines();
   renderAll();
   document.getElementById('btn-note-mode').classList.remove('active');
-  noteMode=false; updateNumPicker();
+  noteMode=false; selectedNum=null; updateNumPicker();
+  setCoach('New difficulty loaded.', 'Start by finding cells with fewer possibilities. Low uncertainty cells are usually safer decisions.', '');
 }
 
 // ================================================================
@@ -998,11 +1090,7 @@ document.addEventListener('keydown',e=>{
   const tag=e.target.tagName;
   if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA') return;
   if(e.key>='1'&&e.key<='9') {
-    selectedNum=parseInt(e.key); updateNumPicker();
-    if(selected&&GIVEN[selected.r][selected.c]===0) {
-      if(noteMode){ const ns=notes[selected.r][selected.c]; if(ns.has(selectedNum))ns.delete(selectedNum);else ns.add(selectedNum); renderCell(selected.r,selected.c); }
-      else placeNumber(selected.r,selected.c,selectedNum);
-    }
+    chooseNumber(parseInt(e.key));
   }
   if(e.key==='Backspace'||e.key==='Delete'||e.key==='0') {
     if(selected&&GIVEN[selected.r][selected.c]===0) removeNumber(selected.r,selected.c);
@@ -1014,12 +1102,11 @@ document.addEventListener('keydown',e=>{
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
     e.preventDefault();
     let r=selected?selected.r:4, c=selected?selected.c:4;
-    if(selected){ cells[r][c].classList.remove('selected'); }
     if(e.key==='ArrowUp') r=Math.max(0,r-1);
     if(e.key==='ArrowDown') r=Math.min(8,r+1);
     if(e.key==='ArrowLeft') c=Math.max(0,c-1);
     if(e.key==='ArrowRight') c=Math.min(8,c+1);
-    selected={r,c}; cells[r][c].classList.add('selected');
+    selectCell(r,c);
   }
 });
 

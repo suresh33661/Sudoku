@@ -58,6 +58,8 @@ In simple terms: every move is like new evidence. Good moves reduce uncertainty 
 7. Use **Sandbox** to test a guess without permanently changing the board.
 8. Watch the side panels to understand candidates, entropy, branching, and chain reactions.
 
+The app now uses a learning-first input flow: select a cell first, then choose a number. Wrong answers are not placed on the board; instead, the reasoning coach explains the mistake and counts it toward a 5-mistake practice limit.
+
 ## Make It Live With GitHub Pages
 
 Because this is a static site with an `index.html` file in the repository root, GitHub Pages can publish it directly.
